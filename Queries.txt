@@ -1,0 +1,36 @@
+SELECT * FROM CAR WHERE EXTRACT( YEAR FROM Last_Service) < EXTRACT(YEAR FROM STR_TO_DATE('2020', '%Y')); 
+-----------------------------------------------------------------------------------------
+SELECT * FROM CAR WHERE ModelY <= 2016 AND CategoryId =2;
+-----------------------------------------------------------------------------------------
+UPDATE CUSTOMER SET Email = "srivatsa@abc.com" WHERE DLNumber="KA04 9867";
+-----------------------------------------------------------------------------------------
+SELECT IName,COUNT(Insurance_Id) FROM INSURANCE GROUP BY IName;
+-----------------------------------------------------------------------------------------
+SELECT Coverage_type,COUNT(Insurance_Id) FROM INSURANCE GROUP BY Coverage_Type; 
+-----------------------------------------------------------------------------------------
+DELETE FROM CATEGORY WHERE CategoryId NOT IN (SELECT CategoryId FROM CAR CATEGORY); 
+-----------------------------------------------------------------------------------------
+SELECT * FROM CAR WHERE RNo LIKE 'KA-02-%';
+-----------------------------------------------------------------------------------------
+SELECT CAR.RNo,CATEGORY.Cost_Per_Day,CATEGORY.Cname, CATEGORY.No_Of_Persons,CATEGORY.LCapacity,CAR.Model 
+FROM CATEGORY JOIN CAR ON CATEGORY.CategoryId=CAR.CategoryId;
+-----------------------------------------------------------------------------------------
+SELECT COUNT(Amt) FROM BOOKING WHERE Amt >7000 AND Amt<8000;
+-----------------------------------------------------------------------------------------
+CREATE TABLE RESULT AS (SELECT CAR.RNo,CAR.CategoryId,CATEGORY.Cost_Per_Day FROM CATEGORY JOIN CAR ON CATEGORY.CategoryId=CAR.CategoryId); 
+CREATE TABLE RESULT2 (SELECT BOOKING.RNo,RESULT.Cost_Per_Day *DATEDIFF(BookD,ReturnD)  AS Amt FROM RESULT JOIN BOOKING ON BOOKING.RNo=RESULT.RNo );
+UPDATE BOOKING AS t1
+JOIN RESULT2 AS t2 ON t1.RNo= t2.RNo
+SET t1.Amt = t2.Amt;
+ALTER TABLE BOOKING
+ADD UsageDays INT;
+UPDATE BOOKING SET UsageDays=DATEDIFF(BookD,ReturnD); 
+ALTER TABLE BOOKING 
+DROP COLUMN UsageDays;
+-----------------------------------------------------------------------------------------
+SELECT CUSTOMER.PName,CUSTOMER.DLNumber,CUSTOMER.PhoneNo,CUSTOMER.Address,BOOKING.RNo
+FROM CUSTOMER JOIN BOOKING ON CUSTOMER.MemberId=BOOKING.MemberId;
+-----------------------------------------------------------------------------------------
+UPDATE BILL AS A
+JOIN BOOKING AS B ON A.Book_Id = B.Book_Id 
+SET A.Total_Amount = B.Amt + A.Service_Fee;
